@@ -1,0 +1,4 @@
+dataset_expanded/
+__pycache__/
+*.pyc
+*.png
