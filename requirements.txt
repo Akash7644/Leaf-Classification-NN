@@ -1,5 +1,4 @@
 Pillow
-ast
 matplotlib
 scikit-learn
 seaborn
