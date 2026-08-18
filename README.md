@@ -186,32 +186,24 @@ The model classifies images into the following **9 leaf species**:
 
 ## Validation Accuracy
 
-```{=html}
 <p align="center">
-```
-`<img src="Images/accuracy_plot.png" alt="Validation Accuracy" width="700">`{=html}
-```{=html}
+  <img src="Images/accuracy_plot.png" alt="Validation Accuracy" width="700">
 </p>
-```
--   **Final Validation Accuracy:** \~90%
--   Training performed for approximately **35 epochs**
--   Stable convergence observed after approximately **20 epochs**
--   Strong classification performance across the nine leaf classes
+
+- **Final Validation Accuracy:** ~90%
+- Training performed for approximately **35 epochs**
+- Stable convergence observed after approximately **20 epochs**
+- Strong classification performance across the nine leaf classes
 
 ## Confusion Matrix
 
-```{=html}
 <p align="center">
-```
-`<img src="Images/confusion_matrix.png" alt="Confusion Matrix" width="700">`{=html}
-```{=html}
+  <img src="Images/confusion_matrix.png" alt="Confusion Matrix" width="700">
 </p>
-```
-The confusion matrix shows a strong diagonal pattern, indicating that
-the model correctly classifies most validation samples.
 
-Minor misclassification is observed between visually similar leaf
-species.
+The confusion matrix shows a strong diagonal pattern, indicating that the model correctly classifies most validation samples.
+
+Minor misclassification is observed between visually similar leaf species.
 
 # 🌐 Streamlit Web Application
 
