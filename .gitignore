@@ -1,5 +1,7 @@
+models/
+simclr_encoder.pth
 dataset_expanded/
 __pycache__/
 *.pyc
 *.png
-simclr_encoder.pth
+.vscode/
