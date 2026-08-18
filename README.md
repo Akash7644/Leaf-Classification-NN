@@ -1,193 +1,345 @@
-#  Leaf Classification using Self-Supervised Learning (SimCLR)
+# Leaf Classification using Self-Supervised Learning (SimCLR)
 
-##  Overview
+A deep learning-based leaf classification system that combines Self-Supervised Learning (SimCLR) with supervised fine-tuning to classify leaf images across 9 plant species.
 
-This project builds a **leaf classification system** using **Self-Supervised Learning (SimCLR)** followed by supervised fine-tuning.
+The project includes SimCLR-based representation learning, a custom CNN encoder, supervised classification, model evaluation, and an interactive Streamlit web application for real-time predictions.
 
-The model first learns visual representations without labels and then performs classification across multiple plant species.
+## Live Demo
 
----
+[Launch the Leaf Classifier](https://leaf-classification-nn-xteamlrhv3f5ch6rylayzb.streamlit.app/)
 
-##  Key Features
+Upload a leaf image to get the predicted species, confidence score, and class-wise probability distribution.
 
-*  Self-Supervised Learning (SimCLR)
-*  Transfer Learning + Fine-Tuning
-*  Custom CNN Encoder
-*  Strong Data Augmentation
-*  Confusion Matrix & Accuracy Analysis
-*  Streamlit Web App for Predictions
+## Overview
 
----
+Traditional image classification requires a large amount of labeled training data. This project explores Self-Supervised Learning using SimCLR to learn meaningful visual representations before performing supervised classification.
 
-##  Project Structure
+The overall workflow is:
 
-```plaintext id="m8t7jm"
-Leaf-Classification-ML/
-│
-├── dataset/            # Dataset
-├── src/
-│   ├── nn_pretrain.py  # SimCLR pretraining
-│   ├── rest.py         # Training + evaluation
-│   ├── predict.py      # Prediction script
-│   └── app.py          # Streamlit app
-│
-├── models/             # Model files (excluded)
-│   └── README.md
-│
-├── requirements.txt
-└── README.md
-```
+Leaf Images
+    |
+    v
+Data Augmentation
+    |
+    v
+SimCLR Self-Supervised Pretraining
+    |
+    v
+CNN Feature Representation
+    |
+    v
+Supervised Fine-Tuning
+    |
+    v
+9-Class Leaf Classification
+    |
+    v
+Streamlit Deployment
 
----
+## Key Features
 
-##  Methodology
+- Self-Supervised Learning using SimCLR
+- Custom CNN Encoder
+- Contrastive Representation Learning
+- Supervised Fine-Tuning
+- Image Augmentation and Preprocessing
+- Accuracy Analysis
+- Confusion Matrix Evaluation
+- 9-Class Leaf Classification
+- Interactive Streamlit Web Application
+- Prediction Confidence and Class Probabilities
+- Streamlit Community Cloud Deployment
+- Git LFS for Large Model Storage
 
-###  1. Self-Supervised Pretraining (SimCLR)
+## Project Structure
 
-* Contrastive learning using augmented image pairs
-* Learns useful feature representations without labels
-* Encoder + projection head architecture
+Leaf-Classification-NN/
+|
+|-- Images/
+|   |-- accuracy_plot.png
+|   `-- confusion_matrix.png
+|
+|-- dataset/
+|   `-- README.md
+|
+|-- models/
+|   `-- README.md
+|
+|-- src/
+|   |-- nn_pretrain.py
+|   |-- rest.py
+|   |-- predict.py
+|   `-- app.py
+|
+|-- leaf_classifier.pth
+|-- requirements.txt
+|-- .gitignore
+|-- .gitattributes
+`-- README.md
 
----
+## Methodology
 
-###  2. Fine-Tuning for Classification
+### 1. Self-Supervised Pretraining - SimCLR
 
-* Load pretrained encoder
-* Add classifier head
-* Freeze + partially unfreeze layers
-* Train on labeled dataset
+The first stage uses SimCLR (Simple Framework for Contrastive Learning of Visual Representations) to learn meaningful image representations without relying on class labels.
 
----
+The process includes:
 
-###  3. Prediction System
+- Generating multiple augmented views of the same image
+- Passing augmented images through a CNN encoder
+- Generating feature representations
+- Using a projection head for contrastive learning
+- Maximizing similarity between representations of the same image
+- Minimizing similarity between representations of different images
 
-* Loads trained model
-* Applies preprocessing
-* Outputs predicted class
+Original Image
+    |
+    v
+Data Augmentation
+    |
+    +----------+
+    |          |
+    v          v
+  View 1     View 2
+    |          |
+    +----+-----+
+         |
+         v
+    CNN Encoder
+         |
+         v
+ Projection Head
+         |
+         v
+ Contrastive Loss
 
----
+The resulting encoder learns useful visual features that can be transferred to the supervised classification stage.
 
-###  4. Web Application
+### 2. Supervised Fine-Tuning
 
-* Built with Streamlit
-* Upload image → Get prediction + confidence
+The pretrained encoder is used as the feature extractor for the classification task.
 
----
+The classification architecture consists of:
 
-##  Model Performance
+Input Image
+    |
+    v
+CNN Encoder
+    |
+    v
+256-D Feature Representation
+    |
+    v
+Linear Layer (256 -> 128)
+    |
+    v
+ReLU
+    |
+    v
+Dropout
+    |
+    v
+Linear Layer (128 -> 9)
+    |
+    v
+Class Prediction
 
-###  Validation Accuracy
+The model is fine-tuned using labeled leaf images to classify the nine target species.
+
+### 3. Prediction System
+
+The prediction pipeline performs the following steps:
+
+1. Load the trained PyTorch model.
+2. Upload a leaf image.
+3. Resize the image to 224 x 224.
+4. Convert the image into the required tensor format.
+5. Perform model inference.
+6. Calculate class probabilities using Softmax.
+7. Return the predicted leaf species and confidence score.
+
+## Supported Classes
+
+The model classifies images into the following 9 leaf species:
+
+1. Ashok Leaves
+2. Banana Leaves
+3. Blackboard Leaves
+4. Gulmohar Leaves
+5. Jamun Leaves
+6. Lily Leaves
+7. Neem Leaves
+8. Paper Flower Leaves
+9. Sadabahar (Madagascar) Leaves
+
+## Model Performance
+
+### Validation Accuracy
 
 ![Validation Accuracy](Images/accuracy_plot.png)
 
+- Final Validation Accuracy: approximately 90%
+- Training performed for approximately 35 epochs
+- Stable convergence observed after approximately 20 epochs
+- Strong classification performance across the nine leaf classes
 
-* Final Accuracy: **~90%**
-* Smooth convergence over 35 epochs
-* Stable performance after epoch ~20
-
----
-
-###  Confusion Matrix
+### Confusion Matrix
 
 ![Confusion Matrix](Images/confusion_matrix.png)
 
-* Strong diagonal → high accuracy
-* Minor confusion between visually similar leaves
-* Good performance across all 9 classes
+The confusion matrix shows a strong diagonal pattern, indicating that the model correctly classifies most validation samples.
 
----
+Minor misclassification is observed between visually similar leaf species.
 
-##  Classes
+## Streamlit Web Application
 
-* Ashok Leaves
-* Banana Leaves
-* Blackboard Leaves
-* Gulmohar Leaves
-* Jamun Leaves
-* Lily Leaves
-* Neem Leaves
-* Paper Flower Leaves
-* Sadabahar (Madagascar) Leaves
+The project includes an interactive Streamlit application for real-time leaf classification.
 
----
+### Application Features
 
-##  How to Run
+- Upload .jpg, .jpeg, or .png leaf images
+- Display the uploaded image
+- Predict the leaf species
+- Display prediction confidence
+- Visualize class-wise probability distribution
+- Responsive wide-layout interface
+- Real-time model inference
 
-### 1️ Install dependencies
+### Prediction Workflow
 
-```bash id="2m7u5f"
+Upload Leaf Image
+    |
+    v
+Image Preprocessing
+    |
+    v
+Trained CNN Model
+    |
+    v
+Prediction
+    |
+    v
+Confidence Score
+    |
+    v
+Class Probability Distribution
+
+### Live Application
+
+https://leaf-classification-nn-xteamlrhv3f5ch6rylayzb.streamlit.app/
+
+## Installation and Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Akash7644/Leaf-Classification-NN.git
+cd Leaf-Classification-NN
+```
+
+### 2. Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
----
+## Running the Project
 
-### 2️ Run training
+### Train the Model
 
-```bash id="b9eqi7"
+```bash
 python src/rest.py
 ```
 
----
+### Run Prediction
 
-### 3️ Run prediction
-
-```bash id="5m8iqo"
+```bash
 python src/predict.py
 ```
 
----
+### Run the Streamlit Application
 
-### 4️ Run web app
-
-```bash id="6c6nhy"
+```bash
 streamlit run src/app.py
 ```
 
----
+## Model Management
 
-##  Model Files
+The trained classification model is:
 
-Due to GitHub size limitations, `.pth` files are not included.
+leaf_classifier.pth
 
-To generate models:
+The model is approximately 100 MB, so it is managed using Git Large File Storage (Git LFS) instead of standard Git storage.
 
-```bash id="3k0b7k"
-python src/nn_pretrain.py
-python src/rest.py
+To work with the model locally:
+
+```bash
+git lfs install
+git lfs pull
 ```
 
----
+The Streamlit application automatically loads the model from the repository root.
 
-##  Technologies Used
+## Technologies Used
 
-* Python
-* PyTorch
-* Torchvision
-* Scikit-learn
-* Matplotlib & Seaborn
-* Streamlit
+### Programming
+- Python
 
----
+### Deep Learning
+- PyTorch
+- Torchvision
+- SimCLR
+- Convolutional Neural Networks
 
-##  Key Insights
+### Machine Learning
+- Scikit-learn
 
-* Self-supervised learning improves feature extraction
-* Fine-tuning boosts classification performance
-* Data augmentation improves generalization
-* Model achieves ~90% validation accuracy
+### Data Visualization
+- Matplotlib
+- Seaborn
 
----
+### Image Processing
+- Pillow
 
-##  Future Improvements
+### Deployment and Version Control
+- Streamlit
+- Streamlit Community Cloud
+- Git
+- GitHub
+- Git LFS
 
-* Use ResNet / EfficientNet backbone
-* Hyperparameter tuning
-* Deploy model on cloud
-* Add real-time camera prediction
+## Key Insights
 
----
+- Self-supervised pretraining enables learning useful visual representations before supervised training.
+- Contrastive learning helps the encoder learn meaningful visual features from augmented image pairs.
+- Fine-tuning the pretrained encoder adapts the learned representations to leaf classification.
+- Data augmentation improves the model's ability to generalize to variations in leaf images.
+- The final model achieves approximately 90% validation accuracy across nine leaf classes.
+- Streamlit provides an accessible interface for real-time model inference.
 
-##  Author
+## Future Improvements
 
-**Akash Badgoti**
+- Experiment with pretrained architectures such as ResNet and EfficientNet.
+- Perform systematic hyperparameter optimization.
+- Increase dataset size and class diversity.
+- Improve classification of visually similar leaf species.
+- Add Grad-CAM for model interpretability.
+- Add Top-3 prediction results.
+- Add real-time camera-based leaf classification.
+- Optimize inference performance for cloud deployment.
 
+## Author
+
+Akash Badgoti
+
+Artificial Intelligence & Data Science
+MBM University, Jodhpur
+
+### Project Links
+
+- GitHub: https://github.com/Akash7644/Leaf-Classification-NN
+- Live Demo: https://leaf-classification-nn-xteamlrhv3f5ch6rylayzb.streamlit.app/
+
+## Support
+
+If you found this project useful, consider giving the repository a star on GitHub.
